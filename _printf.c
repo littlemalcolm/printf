@@ -1,41 +1,72 @@
-#include "main.h"
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-/**
-  * _printf - a variadic function that prints formatted strings.
-  * @format: input string
-  *
-  * Return: number of chars printed
-  */
-int _printf(const char *format, ...)
+int my_printf(const char *format, ...)
 {
-	va_list ap;
-	int i, chars = 0, new_printed = 0;
+	va_list args;
+	va_start(args, format);
 
-	/* process the string normally except char % with s, c, d, r, R, or i */
-	if (format == NULL)
-		return (-1);
-
-	va_start(ap, format);
-
-	for (i = 0; format[i] != '\0'; i++)
+	int i = 0;
+	while (format[i])
 	{
-		if (format[i] != '%')
+		if (format[i] == '%')
 		{
-			write(1, &format[i], 1);
-			chars++;
+			i++;
+			switch (format[i])
+			{
+				case 'd':
+				{
+					int x = va_arg(args, int);
+					printf("%d", x);
+					break;
+				}
+				case 'f':
+				{
+					double x = va_arg(args, double);
+					printf("%f", x);
+					break;
+				}
+				case 'c':
+				{
+					int x = va_arg(args, int);
+					printf("%c", x);
+					break;
+				}
+				case 's':
+				{
+					char *x = va_arg(args, char*);
+					printf("%s", x);
+					break;
+				}
+				case 'x':
+				case 'X':
+				{
+					int x = va_arg(args, int);
+					printf("%x", x);
+					break;
+				}
+				case 'p':
+				{
+					void *x = va_arg(args, void*);
+					printf("%p", x);
+					break;
+				}
+				case '%':
+					putchar('%');
+					break;
+				default:
+					putchar(format[i]);
+					break;
+			}
 		}
 		else
 		{
-			new_printed = 0;
-				i++;
-			new_printed = choose_f(format[i], ap);
-			/* Negative error in failures */
-
-	                if (new_printed < 0)
-				return (-1);
-			chars += new_printed;
+			putchar(format[i]);
 		}
+		i++;
 	}
-	va_end(ap);
-	return (chars);
+
+	va_end(arg);
+	return 0;
 }
